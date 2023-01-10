@@ -1,0 +1,154 @@
+﻿html {
+    overflow-y: scroll;
+}
+
+body {
+    margin-bottom: 50px;
+}
+
+a {
+    display: block;
+    margin-bottom: 15px;
+}
+
+h1 {
+    font-size: 38px;
+}
+
+input {
+    flex: 100%;
+    margin-right: 20px;
+}
+
+label {
+    font-weight: bold;
+}
+
+p {
+    margin-right: 5vw;
+}
+
+    p.about, p.listitem {
+        margin-right: 0;
+    }
+
+.addspace-15 {
+    margin-bottom: 15px;
+}
+
+.alt-label {
+    color: #555555;
+    font-size: 18px;
+    margin-top: 25px;
+}
+
+.column {
+    flex: 33%;
+}
+
+.darkbackground {
+    background-color: #333333;
+    border-radius: 5px;
+    color: white;
+    margin: 30px 0px 25px 0px;
+    padding: 10px 10px 10px 15px;
+}
+
+.error {
+    align-items: end;
+    display: flex;
+    height: 52px;
+}
+
+.form-control {
+    display: inline;
+    width: auto;
+}
+
+.large-image {
+    height: auto;
+    margin: 10px 0px 50px 0px;
+    padding-right: 5vw;
+    width: 100%;
+}
+
+.lightbackground {
+    background-color: #EEEEEE;
+    border-radius: 5px;
+    margin: 10px 5vw 20px 0px;
+    padding: 10px;
+}
+
+.list-group {
+    border: 1px solid lightgrey;
+    display: block;
+    height: 500px;
+    margin: 10px 5vw 20px 0px;
+    overflow: auto;
+}
+
+    .list-group.small {
+        font-size: 100%;
+        height: 225px;
+    }
+
+    .list-group::-webkit-scrollbar {
+        width: 15px;
+    }
+
+    .list-group::-webkit-scrollbar-thumb {
+        background-color: #e9ecef;
+        border-radius: 3px;
+    }
+
+    .list-group::-webkit-scrollbar-track {
+        border-radius: 3px;
+        color: #e9ecef;
+    }
+
+.list-group-item {
+    border: none;
+    border-radius: 5px;
+    height: 40px;
+    overflow: hidden;
+    padding: 10px;
+}
+
+.row {
+    display: flex;
+}
+
+.search {
+    display: flex;
+    margin: 25px 5vw 0px 0px;
+}
+
+.spinner {
+    height: 20px;
+}
+
+.small-image {
+    margin-right: 10px;
+    max-height: 25px;
+    max-width: 25px;
+}
+
+@media screen and (max-width: 1400px) {
+    .column {
+        flex: 50%;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .column {
+        flex: 100%;
+    }
+
+    .large-image {
+        padding-right: 0px;
+    }
+
+    .lightbackground, .list-group, .search {
+        margin-right: 0px;
+    }
+}

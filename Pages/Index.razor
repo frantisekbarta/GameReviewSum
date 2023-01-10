@@ -1,0 +1,285 @@
+﻿@page "/"
+@using Newtonsoft.Json.Linq
+@using ReviewSum.Data
+@using System.Globalization
+@inject ReviewSumService reviewSumService
+
+<head>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<PageTitle>Index</PageTitle>
+
+<div class="darkbackground">
+    <h1>Game Review Sum</h1>
+    <p>Get the gist of game reviews without spoilers. Powered by OpenAI.</p>
+</div>
+
+<div class="row">
+    <div class="column">
+        <div class="search">
+            <input placeholder="Search game" @bind="enteredName" @onkeyup="(async(e) => await KeyPressed(e))" class="form-control" />
+            <button @onclick="(async() => await SearchGame(enteredName))" class="btn btn-outline-primary">Search</button>
+        </div>
+        <div class="spinner">
+            @if (showSpinner == true)
+            {
+                <div class="spinner-border alt-label" role="status"></div>
+            }
+            else if (!string.IsNullOrEmpty(error))
+            {
+                <div class="error">@error</div>
+            }
+        </div>
+    </div>
+    <div class="column">
+    </div>
+    <div class="column">
+    </div>
+</div>
+
+<div class="row">
+    <div class="column">
+        @if (foundGames != null && foundGames.Count != 0)
+        {
+            <label class="alt-label">&nbsp;</label>
+            <ul class="list-group small" id="foundgames-list-group">
+                @foreach (var game in foundGames)
+                {
+                    <li class="list-group-item @(selectedGame != null && game.Id == selectedGame.Id ? "active" : "")" @onclick="() => SelectedGameChanged(game)">
+                        <p class="listitem">@game.Name</p>
+                    </li>
+                }
+            </ul>
+            @if (selectedGame != null)
+            {
+                @if (summaryCompletion != null)
+                {
+                    <label class="alt-label">Review summary:</label>
+                    <div class="lightbackground">
+                        @foreach (var item in summaryCompletion)
+                        {
+                            <div>@item</div>
+                        }
+                    </div>
+                }
+                @if (prosConsCompletion != null)
+                {
+                    <label class="alt-label">Pros and cons:</label>
+                    <div class="lightbackground">
+                        @foreach (var item in prosConsCompletion)
+                        {
+                            <div>@item</div>
+                        }
+                    </div>
+                }
+            }
+        }
+    </div>
+
+    <div class="column">
+        @if (selectedGame != null)
+        {
+            <label class="alt-label">Game details</label>
+            <img src=https://img.opencritic.com/@selectedGame.SquareImage class="large-image">
+            <p><label>Name:</label> @selectedGame.Name</p>
+            <p>
+                <label>Companies:</label>
+                @if (selectedGame.Companies.Count > 0)
+                {
+                    string companies = " ";
+                    foreach (var company in selectedGame.Companies)
+                    {
+                        companies += company + ", ";
+                    }
+                    companies = companies.Remove(companies.Length - 2);
+                    <span>@companies</span>
+                }
+            </p>
+            <p><label>Median Score / Top Critic Score:</label> @selectedGame.MedianScore / @selectedGame.TopCriticScore</p>
+            <p><label>Reviews / Top Critic reviews:</label> @selectedGame.NumReviews / @selectedGame.NumTopCriticReviews</p>
+            <p><label>Top reviews average score:</label> @selectedGame.TopReviewsScore</p>
+            <p><label>% Recommended:</label> @selectedGame.PercentRecommended</p>
+            <p>
+                <label>Genres:</label>
+                @if (selectedGame.Genres.Count > 0)
+                {
+                    string genres = " ";
+                    foreach (var genre in selectedGame.Genres)
+                    {
+                        genres += genre + ", ";
+                    }
+                    genres = genres.Remove(genres.Length - 2);
+                    <span>@genres</span>
+                }
+            </p>
+            <p>
+                <label>Platforms:</label>
+                @if (selectedGame.Platforms.Count > 0)
+                {
+                    string gamePlatforms = " ";
+                    foreach (var gamePlatform in selectedGame.Platforms)
+                    {
+                        gamePlatforms += gamePlatform + ", ";
+                    }
+                    gamePlatforms = gamePlatforms.Remove(gamePlatforms.Length - 2);
+                    <span>@gamePlatforms</span>
+                }
+            </p>
+            <p><label>Description:</label> @selectedGame.Description</p>
+            <a href=@selectedGame.Url target="_blank">@selectedGame.Name OpenCritic page</a>
+        }
+    </div>
+
+    <div class="column">
+        @if (selectedGame != null)
+        {
+            <label class="alt-label" for="reviews-list-group">Top reviews</label>
+            <ul class="list-group" id="reviews-list-group">
+                @foreach (var review in reviews)
+                {
+                    <li class="list-group-item @(selectedReview != null && review.Id == selectedReview.Id ? "active" : "")" @onclick="() => SelectedReviewChanged(review)">
+                        <p class="listitem"><img src=https://img.opencritic.com/@review.OutletImage class="small-image">@review.OutletName: @review.Title</p>
+                    </li>
+                }
+            </ul>
+            @if (selectedReview != null)
+            {
+                <label class="alt-label addspace-15">Review details</label>
+                <p><label>Outlet:</label> @selectedReview.OutletName</p>
+                <p><label>Title:</label> @selectedReview.Title</p>
+                <p>
+                    <label>Author:</label>
+                    @if (selectedReview.Authors.Count > 0)
+                    {
+                        string authors = " ";
+                        foreach (var author in selectedReview.Authors)
+                        {
+                            authors += author + ", ";
+                        }
+                        authors = authors.Remove(authors.Length - 2);
+                        <span>@authors</span>
+                    }
+                    else
+                    {
+                        <span> @(" " + selectedReview.Alias)</span>
+                    }
+                </p>
+                <p><label>Published:</label> @selectedReview.PublishedDate.Value.ToString("dd.MM.yyyy")</p>
+                <p><label>Score:</label> @selectedReview.Score</p>
+                <p>
+                    <label>Recommended:</label>
+                    @if (selectedReview.Recommended != null)
+                    {
+                        if (selectedReview.Recommended == 100)
+                        {
+                            <span> yes</span>
+                        }
+                        else
+                        {
+                            <span> no</span>
+                        }
+                    }
+                </p>
+                <p><label>Snippet:</label> @selectedReview.Snippet</p>
+                <p>
+                    <label>Reviewed on:</label>
+                    @if (selectedReview.Platforms.Count > 0)
+                    {
+                        string reviewPlatforms = " ";
+                        foreach (var reviewPlatform in selectedReview.Platforms)
+                        {
+                            reviewPlatforms += reviewPlatform + ", ";
+                        }
+                        reviewPlatforms = reviewPlatforms.Remove(reviewPlatforms.Length - 2);
+                        <span>@reviewPlatforms</span>
+                    }
+                </p>
+                <a href=@selectedReview.ExternalUrl target="_blank">Go to review</a>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    private string enteredName;
+    private string error;
+
+    private Game selectedGame;
+    private Review selectedReview;
+    private List<string> summaryCompletion;
+    private List<string> prosConsCompletion;
+
+    private List<Game> foundGames;
+    private List<Review> reviews;
+
+    private bool showSpinner;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //enteredName = "Death Stranding";
+    }
+
+    private async Task KeyPressed(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+            await SearchGame(enteredName);
+    }
+
+    private async Task SearchGame(string enteredName)
+    {
+        if (!string.IsNullOrEmpty(enteredName))
+        {
+            error = "";
+            showSpinner = true;
+            foundGames = null;
+            selectedGame = null;
+            foundGames = await reviewSumService.SearchGame(enteredName);
+            showSpinner = false;
+            if (foundGames == null)
+                error = "Service not available, please try later...";
+            else if (foundGames.Count == 0)
+                error = "Nothing found...";
+        }
+    }
+
+    private async Task SelectedGameChanged(Game game)
+    {
+        error = "";
+        showSpinner = true;
+        selectedGame = null;
+        selectedReview = null;
+
+        Task<Game> gameTask = reviewSumService.GetGame(game);
+        Task<List<Review>> reviewsTask = reviewSumService.GetReviews(game.Id);
+        await Task.WhenAll(gameTask, reviewsTask);
+        game = gameTask.Result;
+        reviews = reviewsTask.Result;
+
+        selectedGame = game;
+
+        if (game != null && reviews != null)
+        {
+            game.TopReviewsScore = reviewSumService.GetTopReviewsScore(reviews);
+            Task<List<string>> summaryCompletionTask = reviewSumService.GetSummary(reviews);
+            Task<List<string>> prosConsCompletionTask = reviewSumService.GetProsAndCons(reviews);
+            await Task.WhenAll(summaryCompletionTask, prosConsCompletionTask);
+            summaryCompletion = summaryCompletionTask.Result;
+            prosConsCompletion = prosConsCompletionTask.Result;
+        }
+
+        showSpinner = false;
+
+        if (game == null || reviews == null || summaryCompletion == null || prosConsCompletion == null)
+        {
+            selectedGame = null;
+            error = "Service not available, please try later...";
+        }
+    }
+
+    private void SelectedReviewChanged(Review review)
+    {
+        selectedReview = review;
+    }
+}
