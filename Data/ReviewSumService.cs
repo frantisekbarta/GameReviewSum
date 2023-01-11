@@ -265,7 +265,7 @@ namespace ReviewSum.Data
             {
                 //await TestError(true);
                 //for testing:
-                return new List<string> { "Death Stranding is Hideo Kojima's first post-Metal Gear game and is a messy, indulgent vanity project, but also a true original. It delivers a fascinating world of supernatural sci-fi, but its gameplay struggles to support its weight. It is slow, weird, and indulgent, but a journey that will linger in your mind long after it's over. It is a work of unbridled ambition and imagination, but also pretentious, contrived, and frequently dull. It has its moments, but can't carry the weight of expectation. It is a game of love and hope, with a welcome everyman's weariness, but its strongest ideas are tossed aside in the final acts. It is dense, complex, and powerful, but with uneven story beats. It is beautiful, heart racing, heart breaking, frustrating, epic, stunning, and utterly nuts, and a contender for Game of the Generation. It may not appeal to everyone, but it is certainly one of those games that have to be played once in your life." };
+                //return new List<string> { "Death Stranding is Hideo Kojima's first post-Metal Gear game and is a messy, indulgent vanity project, but also a true original. It delivers a fascinating world of supernatural sci-fi, but its gameplay struggles to support its weight. It is slow, weird, and indulgent, but a journey that will linger in your mind long after it's over. It is a work of unbridled ambition and imagination, but also pretentious, contrived, and frequently dull. It has its moments, but can't carry the weight of expectation. It is a game of love and hope, with a welcome everyman's weariness, but its strongest ideas are tossed aside in the final acts. It is dense, complex, and powerful, but with uneven story beats. It is beautiful, heart racing, heart breaking, frustrating, epic, stunning, and utterly nuts, and a contender for Game of the Generation. It may not appeal to everyone, but it is certainly one of those games that have to be played once in your life." };
                 return await GetCompletion(GPT3Model.Davinci, "Shortly summarise the following video game review highlights: " + ExtractSnippets(reviews), 256, 0, 0, 0);
             }
             catch
@@ -280,7 +280,7 @@ namespace ReviewSum.Data
             {
                 //await TestError(true);
                 //for testing:
-                return new List<string> { "Pros:", "- Fascinating world of supernatural sci-fi", "- Fearless game that often stumbles, but is still fascinating overall", "- Smart, well-produced, and feels good to play", "Cons:", "- Messy, indulgent vanity project", "- Struggles to support its weight", "- Poor pacing and uneven story beats"};
+                //return new List<string> { "Pros:", "- Fascinating world of supernatural sci-fi", "- Fearless game that often stumbles, but is still fascinating overall", "- Smart, well-produced, and feels good to play", "Cons:", "- Messy, indulgent vanity project", "- Struggles to support its weight", "- Poor pacing and uneven story beats"};
                 return await GetCompletion(GPT3Model.Davinci, "Extract three pros and cons from the following video game review highlights: " + ExtractSnippets(reviews), 256, 0, 0, 0);
             }
             catch
@@ -341,7 +341,7 @@ namespace ReviewSum.Data
         private async Task TestError(bool throwException)
         {
             await Task.Delay(500);
-            if (throwException)
+            if (throwException == true)
                 throw new Exception();
         }
     }
