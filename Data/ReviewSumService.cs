@@ -7,7 +7,7 @@ namespace ReviewSum.Data
     // https://rapidapi.com/opencritic-opencritic-default/api/opencritic-api
     // https://app.swaggerhub.com/apis-docs/OpenCritic/OpenCritic-API/1.0.0
     // https://beta.openai.com/docs/api-reference/completions
-    // example of Open AI completion response:
+    // example of OpenAI completion response:
     // '{"id":"cmpl-6KVvRC75ba10XYAQlI2GHN91lTQ1O","object":"text_completion","created":1670347301,"model":"text-curie-001","choices":[{"text":"\\n\\nMy name is Sarah.","index":0,"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":5,"completion_tokens":7,"total_tokens":12}}
 
     public enum GPT3Model
