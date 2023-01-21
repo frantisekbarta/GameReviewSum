@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<ReviewSumService>();
+builder.Services.AddSingleton<IReviewSumService, ReviewSumServiceTest>();
 
 var app = builder.Build();
 
