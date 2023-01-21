@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace ReviewSum.Data
 {
@@ -146,7 +146,8 @@ namespace ReviewSum.Data
             }
             if (count > 0)
                 return average / count;
-            else return 0;
+            else
+                return 0;
         }
 
         public async Task<List<string>> GetSummary(List<Review> reviews)
