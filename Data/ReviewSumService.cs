@@ -58,14 +58,7 @@ namespace ReviewSum.Data
                 {
                     string responseString = await GetGameCallAPI(game.Id);
                     JObject gameJObject = JObject.Parse(responseString);
-                    try
-                    {
-                        game.SquareImage = (string?)gameJObject["images"]["square"]["lg"];
-                    }
-                    catch
-                    {
-                        game.SquareImage = "css/blank_image.png";
-                    }
+                    game.SquareImage = (string?)gameJObject["images"]["square"]["lg"];
                     game.Url = (string?)gameJObject["url"];
                     game.PercentRecommended = (int?)gameJObject["percentRecommended"];
                     game.NumReviews = (int?)gameJObject["numReviews"];
