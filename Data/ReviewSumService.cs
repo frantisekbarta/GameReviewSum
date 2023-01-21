@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Linq;
 using System.Globalization;
 using System.Text;
 
@@ -176,7 +176,8 @@ namespace ReviewSum.Data
             }
             if (count > 0)
                 return average / count;
-            else return 0;
+            else
+                return 0;
         }
 
         private async Task<string> SearchGameCallAPI(string enteredName)
